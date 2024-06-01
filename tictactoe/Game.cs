@@ -26,7 +26,17 @@ public class Game{
     public void printBoard(){
         for(int r = 0; r < board.GetLength(0); r++){
             for(int c = 0; c < board.GetLength(1); c++){
-                Write($"[{board[r,c]}] ");
+                if(board[r,c] == 'X'){
+                    ForegroundColor = ConsoleColor.Red;
+                    Write($"[{board[r,c]}] ");
+                    ForegroundColor = ConsoleColor.White;
+                } else if(board[r,c] == 'O'){
+                    ForegroundColor = ConsoleColor.Green;
+                    Write($"[{board[r,c]}] ");
+                    ForegroundColor = ConsoleColor.White;
+                } else
+                    Write($"[{board[r,c]}] ");
+                
             }
             WriteLine();
         }
@@ -35,10 +45,12 @@ public class Game{
     public void setBoard(int num){
         for(int r = 0; r < board.GetLength(0); r++){
             for(int c = 0; c < board.GetLength(1); c++){
-                int temp = Convert.ToInt32(new string(board[r,c], 1));
-                if(temp == num){
-                    board[r,c] = PlayerChar;
-                    return;
+                //int temp = Convert.ToInt32(new string(board[r,c], 1));
+                if(int.TryParse(new string(board[r,c], 1), out int temp)){
+                    if(temp == num){
+                        board[r,c] = PlayerChar;
+                        return;
+                    }
                 }
             }
         }
@@ -55,13 +67,14 @@ public class Game{
 
         if(isAllEqual(tempList))
             return true;
-        
+        tempList.Clear();
         //Add from right to left
         for(int r = board.GetLength(0) - 1; r >= 0; r--)
             tempList.Add(board[r,r]);
 
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
         #endregion
 
         #region Horizontals
@@ -69,14 +82,17 @@ public class Game{
         addToList(tempList, 0, false);
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
         //Middle Row
         addToList(tempList, 1, false);
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
         //Bottom Row
         addToList(tempList, 2, false);
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
         #endregion
 
         #region Verticals
@@ -84,14 +100,17 @@ public class Game{
         addToList(tempList, 0, true);
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
         //Second Col
         addToList(tempList, 1, true);
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
         //Third Col
         addToList(tempList, 2, true);
         if(isAllEqual(tempList))
             return true;
+        tempList.Clear();
 
         #endregion
 
@@ -123,12 +142,21 @@ public class Game{
     #endregion
 
     #region Properties
-    public char PlayerChar{
+    private char PlayerChar{
         get{
             if(turn)
                 return 'X';
             else
                 return 'O';
+        }
+    }
+
+    public string Player{
+        get{
+            if(turn)
+                return "Player 1";
+            else
+                return "Player 2";
         }
     }
     #endregion
